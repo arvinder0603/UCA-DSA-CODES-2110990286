@@ -1,0 +1,52 @@
+#include <stdio.h>
+
+struct Stack {
+    int array[10000];
+    int top;
+};
+
+void initialise(struct Stack *stack) {
+    stack->top = -1;
+}
+
+int isEmpty(struct Stack *stack) {
+    if (stack->top == -1) {
+        return 1;
+    }
+    return 0;
+}
+
+int isFull(struct Stack *stack) {
+    if (stack->top == 9999) {
+        return 1;
+    }
+    return 0;
+}
+
+void push(struct Stack *stack, int value) {
+    if (isFull(stack) == 1) {
+        printf("Stack is full");
+    } else {
+        stack->top++;
+        stack->array[stack->top] = value;
+    }
+}
+
+int pop(struct Stack *stack) {
+    if (isEmpty(stack) == 1) {
+        printf("Stack is empty");
+    } else {
+        int pop_value = stack->array[stack->top];
+        stack->top--;
+        return pop_value;
+    }
+}
+
+int main() {
+    struct Stack st;
+    initialise(&st);
+
+    
+
+    return 0;
+}
