@@ -1,0 +1,103 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+#include <stdlib.h>
+
+#define STACK_SIZE 10000
+
+struct Stack {
+    char array[STACK_SIZE];
+    int top;
+};
+
+void initialise(struct Stack *stack) {
+    stack->top = -1;
+}
+
+int isEmpty(struct Stack *stack) {
+    return stack->top == -1;
+}
+
+void push(struct Stack *stack, char value) {
+    if (stack->top < STACK_SIZE - 1) {
+        stack->top++;
+        stack->array[stack->top] = value;
+    } else {
+        printf("Stack is full\n");
+    }
+}
+
+char top(struct Stack *stack) {
+    if (isEmpty(stack)) {
+        printf("Stack is empty\n");
+        return '\0';  // Return null character for an empty stack
+    } else {
+        return stack->array[stack->top];
+    }
+}
+
+void pop(struct Stack *stack) {
+    if (!isEmpty(stack)) {
+        stack->top--;
+    } else {
+        printf("Stack is empty\n");
+    }
+}
+
+char *removeDuplicateLetters(const char *s) {
+    struct Stack st;
+    initialise(&st);
+
+    int lastIndex[26] = {0};
+    bool seen[26] = {false};
+
+    for (int i = 0; i < strlen(s); i++) {
+        lastIndex[s[i] - 'a'] = i;
+    }
+
+    for (int i = 0; i < strlen(s); i++) {
+        int curr = s[i] - 'a';
+        if (seen[curr]) continue;
+
+        while (!isEmpty(&st) && top(&st) > s[i] && i < lastIndex[top(&st) - 'a']) {
+            seen[top(&st) - 'a'] = false;
+            pop(&st);
+        }
+
+        push(&st, s[i]);
+        seen[curr] = true;
+    }
+
+    char *ans = (char *)malloc((st.top + 2) * sizeof(char));
+    int index = 0;
+
+    while (!isEmpty(&st)) {
+        ans[index++] = top(&st);
+        pop(&st);
+    }
+
+    ans[index] = '\0';
+
+    // Reverse the string
+    int start = 0, end = index - 1;
+    while (start < end) {
+        char temp = ans[start];
+        ans[start] = ans[end];
+        ans[end] = temp;
+        start++;
+        end--;
+    }
+
+    return ans;
+}
+
+int main() {
+    const char *s = "bcabc";
+    char *result = removeDuplicateLetters(s);
+
+    printf("String after removing duplicates: %s\n", result);
+
+    free(result);
+
+    return 0;
+}
